@@ -16,12 +16,17 @@ public:
 	}
 	~TuringMachine() {}
 	TuringMachine(std::vector<std::string> program) {
-		Load(program);
-		Run(states[0]);
+		LoadAndRun(program);
 	}
 	TuringMachine(std::string program) {
-		Load(program);
-		Run(states[0]);
+		LoadAndRun(program);
+	}
+
+	template <typename T>
+	void LoadAndRun(T program) {
+		unsigned ld = Load(program);
+		int se = states.size() - ld;
+		Run(states[se]); 
 	}
 private:
 	std::vector<std::string> states {};
@@ -33,22 +38,34 @@ private:
 	unsigned long long Rtape = 0;
 	unsigned long long Ltape = 0;
 
-	void Load(std::string program) { 
+	unsigned Load(std::string program) { 
+		unsigned count = 0;
 		std::string prog = "";
 		for (auto it = program.begin(); it != program.end(); ++it) {
 			if (*it != LD) {
 				prog += (*it);
 			}
 			else {
-				if (!prog.empty())
+				if (!prog.empty()) {
 					states.push_back(prog);
+					count++;
+				}
 				prog = "";
 			}
 		}
-		if (!prog.empty()) states.push_back(prog);
-		 
+		if (!prog.empty()) {
+			states.push_back(prog);
+			count++;
+		}
+		return count;
 	}
-	void Load(std::vector<std::string> program) { states = program; }
+	unsigned Load(std::vector<std::string> program) { 
+		unsigned count = 0;
+		for (std::string s : program) {
+			count += Load(s);
+		}
+		return count;
+	}
 	void Call(unsigned state) {
 		previous.push_back(this->state);
 		instnum.push_back(count);
