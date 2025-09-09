@@ -85,35 +85,35 @@ private:
 					Right();
 					break;
 
-					case char(int(CL)) : // Conditional Call
-					{
+				case char(int(CL)) : // Conditional Call
+				{
 
+					++it;
+					if (it != Program.end() && *it == char(TE)) {
 						++it;
-						if (it != Program.end() && *it == char(TE)) {
+						if (Read() == true)
+							Call(int(*it));
+						else {
 							++it;
-							if (Read() == true)
+							if (it != Program.end() && *it != char(NG))
 								Call(int(*it));
-							else {
-								++it;
-								if (it != Program.end() && *it != char(NG))
-									Call(int(*it));
-							}
+						}
 
-						}
-						else if (it != Program.end() && *it == char(FE)) {
+					}
+					else if (it != Program.end() && *it == char(FE)) {
+						++it;
+						if (Read() == false)
+							Call(int(*it));
+						else {
 							++it;
-							if (Read() == false)
+							if (it != Program.end() && *it != char(NG))
 								Call(int(*it));
-							else {
-								++it;
-								if (it != Program.end() && *it != char(NG))
-									Call(int(*it));
-							}
-						}
-						if (it == Program.end()) {
-							break; break;
 						}
 					}
+					if (it == Program.end()) {
+						break; break;
+					}
+				}
 				case char(int(WT)) : // Write TE or FE at tape head.
 					if ((it + 1) == Program.end()) { break; break; }
 					if (*(it + 1) == char(TE)) Write(true);
