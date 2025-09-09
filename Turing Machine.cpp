@@ -1,12 +1,15 @@
 // Turing Machine.cpp : 
 // Reed Axewielder
+
 #include <vector>
 #include <bitset>
 #include <iostream>
+
 enum TMInst
 {
     FE, TE, ST, LT, RT, WT, RD, RN, LD, CL, ED, NG = -1
 };
+
 class TuringMachine {
 public:
 	TuringMachine() {
@@ -21,19 +24,25 @@ public:
 		Run(program);
 	}
 private:
-	std::vector<std::string> states;
+	std::vector<std::string> states {};
 	int head = 0;
 	unsigned state = 0;
+	unsigned count = 0;
+	std::vector<unsigned> instnum {};
+	std::vector<unsigned> previous {};
 	unsigned long long Rtape = 0;
 	unsigned long long Ltape = 0;
 
 	void Load(std::string program) { states.push_back(program); }
 	void Load(std::vector<std::string> program) { states = program; }
-	void Call(unsigned state) {
+	void Call(unsigned state, unsigned inst) {
+		previous.push_back(this->state);
+		instnum.push_back(inst);
 		this->state = state;
 		if (state < states.size()) {
 			Run(states[state]);
 		}
+		else std::cerr << "State not in memory";
 	}
 	void Left() { head--; }
 	void Right() { head++; }
@@ -58,7 +67,10 @@ private:
 		}
 	}
 	void Start() {
-		head = Ltape = Rtape = 0;
+		head = Ltape = Rtape = state = count = 0;
+		states.clear();
+		
+		previous.clear();
 	}
 	void End() {
 		std::cout << "State of the machine: \n"
@@ -66,12 +78,25 @@ private:
 			<< std::bitset<64>(Rtape) << std::endl;
 		std::cout << "Head: " << head << std::endl;
 		std::cout << "State: " << state << std::endl;
+		std::cout << "Count: " << count << std::endl;
+
+		if (!previous.empty() && !instnum.empty()) {
+			state = previous.back();
+			previous.pop_back();
+			Run(states[state], instnum.back() + 1); // must make sure this +1 is necessary.
+			instnum.pop_back();
+		}
+
 	}
-	void Run(std::string Program) {
+	void Run(std::string program) {
+		Run(program, 0);
+
+	}
+	void Run(std::string Program, unsigned bytes) {
 		std::string prgrm = "";
-		for (std::string::iterator it = Program.begin(); it != Program.end(); ++it) {
+		for (std::string::iterator it = (Program.begin()+bytes); it < Program.end(); ++it) {
 			char c = *it;
-			
+			count++;
 			switch (c)
 			{
 				case char(int(ST)) : // Start. Initialize to zero.
@@ -89,25 +114,30 @@ private:
 				{
 
 					++it;
+					count++;
 					if (it != Program.end() && *it == char(TE)) {
 						++it;
+						count++;
 						if (Read() == true)
-							Call(int(*it));
+							Call(int(*it),count);
 						else {
 							++it;
+							count++;
 							if (it != Program.end() && *it != char(NG))
-								Call(int(*it));
+								Call(int(*it), count);
 						}
 
 					}
 					else if (it != Program.end() && *it == char(FE)) {
 						++it;
+						count++;
 						if (Read() == false)
-							Call(int(*it));
+							Call(int(*it), count);
 						else {
 							++it;
+							count++;
 							if (it != Program.end() && *it != char(NG))
-								Call(int(*it));
+								Call(int(*it), count);
 						}
 					}
 					if (it == Program.end()) {
@@ -119,6 +149,7 @@ private:
 					if (*(it + 1) == char(TE)) Write(true);
 					if (*(it + 1) == char(FE)) Write(false);
 					++it;
+					count++;
 					break;
 				case char(int(NG)) : // Do nothing.
 					break;
@@ -130,6 +161,7 @@ private:
 					std::string prog = "";
 					while ((it + 1) != Program.end() || *(it + 1) != LD) {
 						++it;
+						count++;
 						prog += (*it);
 					}
 					Load(prog);
@@ -139,13 +171,16 @@ private:
 				{
 					prgrm.clear();
 					++it;
+					count++;
 					while (it != Program.end() && (*it) != char(ED)) {
 						prgrm += (*it);
 						++it;
+						count++;
 					}
 					if ((*it) == char(ED)) {
 						prgrm += (*it);
 						++it;
+						count++;
 					}
 					TuringMachine(prgrm);
 					if (it == Program.end()) { break; break; }
@@ -153,6 +188,7 @@ private:
 				}
 				case char(int(ED)) : // End the program and print the machine state.
 					End();
+					
 					break;
 
 				default:
