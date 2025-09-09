@@ -10,17 +10,14 @@ enum TMInst
 class TuringMachine {
 public:
 	TuringMachine() {
-		Start();
 	}
 	~TuringMachine() {}
 	TuringMachine(std::vector<std::string> program) {
-		Start();
 		for (auto& i: program)
 			Load(i);
 		Run(states[0]);
 	}
 	TuringMachine(std::string program) {
-		Start();
 		Run(program);
 	}
 private:
@@ -135,7 +132,7 @@ private:
 						++it;
 						prog += (*it);
 					}
-					states.push_back(prog);
+					Load(prog);
 				}
 
 				case char(int(RN)) : // Run the following program until the end.
@@ -171,7 +168,8 @@ int main()
 {
 
     std::cout << "Turing Machine\n";
-	std::cout << "2025 Copyright AXEWIELDER GOODS\n";
+	std::cout << "2025 Copyright AXEWIELDER GOODS\n"
+		<< "New York, NY, USA\n";
 
 	std::string program = "";
 	int p[] = {ST,WT,1,LT,WT,1,LT,WT,1,ED};
