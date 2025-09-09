@@ -79,6 +79,17 @@ private:
 		std::cout << "Head: " << head << std::endl;
 		std::cout << "State: " << state << std::endl;
 		std::cout << "Count: " << count << std::endl;
+		std::cout << "Trail: ";
+
+		for (auto a : previous) {
+			std::cout << a << " ";
+		}
+		std::cout << "\n"
+			<< "Route: ";
+		for (auto a : instnum) {
+			std::cout << a << " ";
+		}
+		std::cout << "\n";
 
 		if (!previous.empty() && !instnum.empty()) {
 			state = previous.back();
