@@ -7,7 +7,7 @@
 
 enum TMInst
 {
-    FE, TE, ST, LT, RT, WT, RD, RN, LD, CL, ED, NG = -1
+    FE, TE, ST, LT, RT, WE, RD, RN, LD, CL, ED, NG = -1
 };
 
 class TuringMachine {
@@ -16,12 +16,12 @@ public:
 	}
 	~TuringMachine() {}
 	TuringMachine(std::vector<std::string> program) {
-		for (auto& i: program)
-			Load(i);
+		Load(program);
 		Run(states[0]);
 	}
 	TuringMachine(std::string program) {
-		Run(program);
+		Load(program);
+		Run(states[0]);
 	}
 private:
 	std::vector<std::string> states {};
@@ -33,14 +33,33 @@ private:
 	unsigned long long Rtape = 0;
 	unsigned long long Ltape = 0;
 
-	void Load(std::string program) { states.push_back(program); }
+	void Load(std::string program) { 
+		std::string prog = "";
+		for (auto it = program.begin(); it != program.end(); ++it) {
+			if (*it != LD) {
+				prog += (*it);
+			}
+			else {
+				if (!prog.empty())
+					states.push_back(prog);
+				prog = "";
+			}
+		}
+		if (!prog.empty()) states.push_back(prog);
+		 
+	}
 	void Load(std::vector<std::string> program) { states = program; }
-	void Call(unsigned state, unsigned inst) {
+	void Call(unsigned state) {
 		previous.push_back(this->state);
-		instnum.push_back(inst);
+		instnum.push_back(count);
+
 		this->state = state;
 		if (state < states.size()) {
 			Run(states[state]);
+			this->state = previous.back();
+			previous.pop_back();
+			count = instnum.back();
+			instnum.pop_back();
 		}
 		else std::cerr << "State not in memory";
 	}
@@ -69,7 +88,7 @@ private:
 	void Start() {
 		head = Ltape = Rtape = state = count = 0;
 		states.clear();
-		
+		instnum.clear();
 		previous.clear();
 	}
 	void End() {
@@ -91,22 +110,12 @@ private:
 		}
 		std::cout << "\n"
 			<< "States: " << states.size() << std::endl;
-
-		if (!previous.empty() && !instnum.empty()) {
-			state = previous.back();
-			previous.pop_back();
-			Run(states[state], instnum.back() + 1); // must make sure this +1 is necessary.
-			instnum.pop_back();
-		}
-
 	}
-	void Run(std::string program) {
-		Run(program, 0);
 
-	}
-	void Run(std::string Program, unsigned bytes) {
+	void Run(std::string Program) {
+		count = 0;
 		std::string prgrm = "";
-		for (std::string::iterator it = (Program.begin()+bytes); it < Program.end(); ++it) {
+		for (std::string::iterator it = (Program.begin()+count); it < Program.end(); ++it) {
 			char c = *it;
 			count++;
 			switch (c)
@@ -131,12 +140,12 @@ private:
 						++it;
 						count++;
 						if (Read() == true)
-							Call(int(*it),count);
+							Call(int(*it));
 						else {
 							++it;
 							count++;
 							if (it != Program.end() && *it != char(NG))
-								Call(int(*it), count);
+								Call(int(*it));
 						}
 
 					}
@@ -144,19 +153,19 @@ private:
 						++it;
 						count++;
 						if (Read() == false)
-							Call(int(*it), count);
+							Call(int(*it));
 						else {
 							++it;
 							count++;
 							if (it != Program.end() && *it != char(NG))
-								Call(int(*it), count);
+								Call(int(*it));
 						}
 					}
 					if (it == Program.end()) {
 						break; break;
 					}
 				}
-				case char(int(WT)) : // Write TE or FE at tape head.
+				case char(int(WE)) : // Write TE or FE at tape head.
 					if ((it + 1) == Program.end()) { break; break; }
 					if (*(it + 1) == char(TE)) Write(true);
 					if (*(it + 1) == char(FE)) Write(false);
@@ -170,13 +179,11 @@ private:
 					break;
 				case char(int(LD)) : // Load a machine state program.
 				{
-					std::string prog = "";
-					while ((it + 1) != Program.end() || *(it + 1) != LD) {
-						++it;
-						count++;
-						prog += (*it);
-					}
-					Load(prog);
+					std::string prog (it+1, Program.end());
+
+					if (!prog.empty())
+						Load(prog);
+					break;
 				}
 
 				case char(int(RN)) : // Run the following program until the end.
@@ -220,12 +227,21 @@ int main()
 		<< "New York, NY, USA\n";
 
 	std::string program = "";
-	int p[] = {ST,WT,1,LT,WT,1,LT,WT,1,ED};
+	int p[] = {ST,WE,1,LT,WE,1,LT,WE,1,ED};
 	for (int i : p) {
 		program += char(i);
 	}
 
 	TuringMachine Alpha(program);
 
-    std::cout << (1ULL << 60) << std::endl;
+	program.clear();
+
+	int r[] = { LD, WE, TE, RT, CL, FE, 1, NG, RT, WE, FE, ED, LD, WE, TE, LT, WE, FE, ED };
+	for (int i : r) {
+		program += char(i);
+	}
+
+	TuringMachine Beta(program);
+
+	return 0;
 }
