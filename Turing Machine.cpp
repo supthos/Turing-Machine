@@ -30,13 +30,13 @@ public:
 	}
 private:
 	std::vector<std::string> states {};
-	int head = 0;
+	short head = 0;
 	unsigned state = 0;
 	unsigned count = 0;
 	std::vector<unsigned> instnum {};
 	std::vector<unsigned> previous {};
-	unsigned long long Rtape = 0;
-	unsigned long long Ltape = 0;
+	unsigned long long Rtape[512]{};
+	unsigned long long Ltape[512]{};
 
 	unsigned Load(std::string program) { 
 		unsigned count = 0;
@@ -84,34 +84,40 @@ private:
 	void Right() { head++; }
 	void Write(bool a) {
 		if (head >= 0){
-			if (a == true) Rtape = Rtape | (1ULL << head);
-			else Rtape = Rtape & ~(1ULL << head);
+			unsigned tape = head / 64;
+			if (a == true) Rtape[tape] = Rtape[tape] | (1ULL << (head % 64));
+			else Rtape[tape] = Rtape[tape] & ~(1ULL << (head % 64));
 		}
 		else if(head<0) {
-			if (a == true) Ltape = Ltape | (1ULL << (-head-1));
-			else Ltape = Ltape & ~(1ULL << (-head-1));
+			unsigned tape = (abs(head + 1)) / 64;
+			if (a == true) Ltape[tape] = Ltape[tape] | (1ULL << ((abs(head + 1)) % 64));
+			else Ltape[tape] = Ltape[tape] & ~(1ULL << ((abs(head + 1)) % 64));
 		}
 	}
 	bool Read() {
 		if (head >= 0) {
-			if ((Rtape & (1ULL << head)) == 0) return false;
+			unsigned tape = head / 64;
+			unsigned long long val = Rtape[tape] & (1ULL << (head % 64));
+			if (val == 0) return false;
 			else return true;
 		}
 		if (head < 0) {
-			if ((Ltape & (1ULL << (-head))) == 0) return false;
+			unsigned tape = (abs(head + 1)) / 64;
+			unsigned long long val = Ltape[tape] & (1ULL << ((abs(head + 1)) % 64));
+			if (val == 0) return false;
 			else return true;
 		}
 	}
 	void Start() {
-		head = Ltape = Rtape = state = count = 0;
+		head = state = count = 0;
 		states.clear();
 		instnum.clear();
 		previous.clear();
 	}
 	void End() {
 		std::cout << "State of the machine: \n"
-			<< std::bitset<64>(Ltape) << std::endl
-			<< std::bitset<64>(Rtape) << std::endl;
+			<< std::bitset<64>(Ltape[0]) << std::endl
+			<< std::bitset<64>(Rtape[0]) << std::endl;
 		std::cout << "Head: " << head << std::endl;
 		std::cout << "State: " << state << std::endl;
 		std::cout << "Count: " << count << std::endl;
