@@ -89,7 +89,8 @@ private:
 		for (auto a : instnum) {
 			std::cout << a << " ";
 		}
-		std::cout << "\n";
+		std::cout << "\n"
+			<< "States: " << states.size() << std::endl;
 
 		if (!previous.empty() && !instnum.empty()) {
 			state = previous.back();
