@@ -115,10 +115,27 @@ private:
 		previous.clear();
 	}
 	void End() {
+		std::string mess = "";
+		if (head >= 0) {
+			for (int i = 0; i < 63 - head; i++) {
+				mess += " ";
+			}
+			mess += "_";
+
+		}
+		if (head < 0) {
+			for (int i = -1; i > -64 - head -1; i--) {
+				mess += " ";
+			}
+			mess += "^";
+		}
+
+
 		std::cout << "State of the machine: \n"
-			<< std::bitset<64>(Ltape[0]) << std::endl
-			<< std::bitset<64>(Rtape[0]) << std::endl;
-		std::cout << "Head: " << head << std::endl;
+			<< std::bitset<64>(Ltape[(abs(head + 1)) / 64]) << std::endl
+			<< mess<< std::endl
+			<< std::bitset<64>(Rtape[(head/64)]) << std::endl;
+				std::cout << "Head: " << head << std::endl;
 		std::cout << "State: " << state << std::endl;
 		std::cout << "Count: " << count << std::endl;
 		std::cout << "Trail: ";
@@ -224,6 +241,7 @@ private:
 						++it;
 						count++;
 					}
+				
 					TuringMachine(prgrm);
 					if (it == Program.end()) { break; break; }
 					break;
