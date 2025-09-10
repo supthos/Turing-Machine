@@ -96,9 +96,9 @@ private:
 			else Rtape[tape] = Rtape[tape] & ~(1ULL << (head % 64));
 		}
 		else if(head<0) {
-			unsigned tape = (abs(head + 1)) / 64;
-			if (a == true) Ltape[tape] = Ltape[tape] | (1ULL << ((abs(head + 1)) % 64));
-			else Ltape[tape] = Ltape[tape] & ~(1ULL << ((abs(head + 1)) % 64));
+			unsigned tape = abs((head + 1) / 64);
+			if (a == true) Ltape[tape] = Ltape[tape] | (1ULL << ((abs((head + 1) % 64))));
+			else Ltape[tape] = Ltape[tape] & ~(1ULL << (abs((head + 1) % 64)));
 		}
 	}
 	bool Read() {
@@ -109,8 +109,8 @@ private:
 			else return true;
 		}
 		else if (head < 0) {
-			unsigned tape = (abs(head + 1)) / 64;
-			unsigned long long val = Ltape[tape] & (1ULL << ((abs(head + 1)) % 64));
+			unsigned tape = abs((head + 1) / 64);
+			unsigned long long val = Ltape[tape] & (1ULL << (abs((head + 1) % 64)));
 			if (val == 0) return false;
 			else return true;
 		}
@@ -130,14 +130,15 @@ private:
 	void End() {
 		std::string mess = "";
 		if (head >= 0) {
-			for (int i = 0; i < 63 - head; i++) {
+			for (int i = 0; i < 63 - (head % 64); i++) {
 				mess += " ";
 			}
 			mess += "_";
 
 		}
+
 		if (head < 0) {
-			for (int i = -1; i > -64 - head -1; i--) {
+			for (int i = -1; i > -64 - ((head+1)%64) ; i--) {
 				mess += " ";
 			}
 			mess += "^";
@@ -145,7 +146,7 @@ private:
 
 
 		std::cout << "State of the machine: \n"
-			<< std::bitset<64>(Ltape[(abs(head + 1)) / 64]) << std::endl
+			<< std::bitset<64>(Ltape[(abs((head + 1) / 64))]) << std::endl
 			<< mess<< std::endl
 			<< std::bitset<64>(Rtape[(head/64)]) << std::endl;
 				std::cout << "Head: " << head << std::endl;
