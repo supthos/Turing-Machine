@@ -26,9 +26,13 @@ public:
 	void LoadAndRun(T program) {
 		unsigned ld = Load(program);
 		if (ld > 0 && states.size() > 0 && ld <= states.size()) {
-			unsigned se = states.size() - ld;
+			unsigned se = unsigned(states.size()) - ld;
 			Run(states[se]);	
 		}
+	}
+	void Reset() {
+		Start();
+		End();
 	}
 private:
 	std::vector<std::string> states {};
@@ -69,12 +73,13 @@ private:
 		return count;
 	}
 	void Call(unsigned state) {
-		previous.push_back(this->state);
-		instnum.push_back(count);
-
-		this->state = state;
 		if (state < states.size()) {
+			previous.push_back(this->state);
+			instnum.push_back(count);
+			this->state = state;
+
 			Run(states[state]);
+			
 			this->state = previous.back();
 			previous.pop_back();
 			count = instnum.back();
@@ -103,7 +108,7 @@ private:
 			if (val == 0) return false;
 			else return true;
 		}
-		if (head < 0) {
+		else if (head < 0) {
 			unsigned tape = (abs(head + 1)) / 64;
 			unsigned long long val = Ltape[tape] & (1ULL << ((abs(head + 1)) % 64));
 			if (val == 0) return false;
@@ -252,7 +257,7 @@ private:
 						count++;
 					}
 				
-					TuringMachine(prgrm);
+					new TuringMachine(prgrm);
 					if (it == Program.end()) { break; break; }
 					break;
 				}
@@ -283,15 +288,9 @@ int main()
 		program += char(i);
 	}
 
-	TuringMachine Alpha(program);
+	TuringMachine* Alpha = new TuringMachine(program);
 
-	program.clear();
-	program = "";
-	int q[] = {ST,ED};
-	for (int i : q) {
-		program += char(i);
-	}
-	Alpha.LoadAndRun(program);
+	Alpha->Reset();
 
 	program.clear();
 	program = "";
@@ -300,7 +299,7 @@ int main()
 		program += char(i);
 	}
 
-	Alpha.LoadAndRun(program);
+	Alpha->LoadAndRun(program);
 	TuringMachine Beth(program);
 
 	return 0;
