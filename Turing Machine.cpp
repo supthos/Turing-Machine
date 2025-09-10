@@ -25,8 +25,10 @@ public:
 	template <typename T>
 	void LoadAndRun(T program) {
 		unsigned ld = Load(program);
-		int se = states.size() - ld;
-		Run(states[se]); 
+		if (ld > 0 && states.size() > 0 && ld <= states.size()) {
+			unsigned se = states.size() - ld;
+			Run(states[se]);	
+		}
 	}
 private:
 	std::vector<std::string> states {};
@@ -46,14 +48,14 @@ private:
 				prog += (*it);
 			}
 			else {
-				if (!prog.empty()) {
+				if (!prog.empty() && prog != "") {
 					states.push_back(prog);
 					count++;
 				}
 				prog = "";
 			}
 		}
-		if (!prog.empty()) {
+		if (!prog.empty() && prog != "") {
 			states.push_back(prog);
 			count++;
 		}
@@ -61,7 +63,7 @@ private:
 	}
 	unsigned Load(std::vector<std::string> program) { 
 		unsigned count = 0;
-		for (std::string s : program) {
+		for (std::string& s : program) {
 			count += Load(s);
 		}
 		return count;
@@ -110,9 +112,15 @@ private:
 	}
 	void Start() {
 		head = state = count = 0;
+		for (unsigned u = 0; u < 512; u++) {
+			Ltape[u] = 0;
+			Rtape[u] = 0;
+		}
+
 		states.clear();
 		instnum.clear();
 		previous.clear();
+
 	}
 	void End() {
 		std::string mess = "";
@@ -176,7 +184,7 @@ private:
 
 					++it;
 					count++;
-					if (it != Program.end() && *it == char(TE)) {
+					if (it != Program.end() && *it == char(int(TE))) {
 						++it;
 						count++;
 						if (Read() == true)
@@ -184,12 +192,12 @@ private:
 						else {
 							++it;
 							count++;
-							if (it != Program.end() && *it != char(NG))
+							if (it != Program.end() && *it != char(int(NG)))
 								Call(int(*it));
 						}
 
 					}
-					else if (it != Program.end() && *it == char(FE)) {
+					else if (it != Program.end() && *it == char(int(FE))) {
 						++it;
 						count++;
 						if (Read() == false)
@@ -197,7 +205,7 @@ private:
 						else {
 							++it;
 							count++;
-							if (it != Program.end() && *it != char(NG))
+							if (it != Program.end() && *it != char(int(NG)))
 								Call(int(*it));
 						}
 					}
@@ -221,22 +229,24 @@ private:
 				{
 					std::string prog (it+1, Program.end());
 
-					if (!prog.empty())
+					if (!prog.empty() && prog != "") {
 						Load(prog);
+					}
 					break;
 				}
 
 				case char(int(RN)) : // Run the following program until the end.
 				{
 					prgrm.clear();
+					prgrm = "";
 					++it;
 					count++;
-					while (it != Program.end() && (*it) != char(ED)) {
+					while (it != Program.end() && (*it) != char(int(ED))) {
 						prgrm += (*it);
 						++it;
 						count++;
 					}
-					if ((*it) == char(ED)) {
+					if ((*it) == char(int(ED))) {
 						prgrm += (*it);
 						++it;
 						count++;
@@ -276,13 +286,22 @@ int main()
 	TuringMachine Alpha(program);
 
 	program.clear();
+	program = "";
+	int q[] = {ST,ED};
+	for (int i : q) {
+		program += char(i);
+	}
+	Alpha.LoadAndRun(program);
 
+	program.clear();
+	program = "";
 	int r[] = { LD, WE, TE, RT, CL, FE, 1, NG, RT, WE, FE, ED, LD, WE, TE, LT, WE, FE, ED };
 	for (int i : r) {
 		program += char(i);
 	}
 
-	TuringMachine Beta(program);
+	Alpha.LoadAndRun(program);
+	TuringMachine Beth(program);
 
 	return 0;
 }
