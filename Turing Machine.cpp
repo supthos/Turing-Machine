@@ -12,9 +12,9 @@ int main()
 		<< "New York, NY, USA\n";
 
 	std::string program = "";
-	int p[] = {ST,WE,1,LT,WE,1,LT,WE,1,ED};
-	for (int i : p) {
-		program += char(i);
+	char p[] = {ST,WE,1,LT,WE,1,LT,WE,1,ED};
+	for (char i : p) {
+		program += i;
 	}
 
 	TuringMachine* Alpha = new TuringMachine(program);
@@ -23,9 +23,9 @@ int main()
 
 	program.clear();
 	program = "";
-	int r[] = { LD, LT, LT, WE, TE, RT, RT, WE, TE, RT, CL, FE, 1, NG, RT, WE, FE, ED, LD, WE, TE, LT, WE, FE, ED };
+	char r[] = { LD, LT, LT, WE, TE, RT, RT, WE, TE, RT, CL, FE, 1, NG, RT, WE, FE, ED, LD, WE, TE, LT, WE, FE, ED };
 	for (int i : r) {
-		program += char(i);
+		program += i;
 	}
 
 	Alpha->LoadAndRun(program);
