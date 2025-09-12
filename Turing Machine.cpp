@@ -24,7 +24,7 @@ int main()
 	program.clear();
 	program = "";
 	char r[] = { LD, LT, LT, WE, TE, RT, RT, WE, TE, RT, CL, FE, 1, NG, RT, WE, FE, ED, LD, WE, TE, LT, WE, FE, ED };
-	for (int i : r) {
+	for (char i : r) {
 		program += i;
 	}
 
