@@ -4,8 +4,8 @@
 // GMDA
 #pragma once
 #include <vector>
-#include <bitset>
 #include <iostream>
+#include <valarray>
 
 enum TMInst
 {
@@ -36,15 +36,15 @@ public:
 		Start();
 		End();
 	}
-private:
+protected:
 	std::vector<std::string> states{};
 	short head = 0;
 	unsigned state = 0;
 	unsigned count = 0;
 	std::vector<unsigned> instnum{};
 	std::vector<unsigned> previous{};
-	unsigned long long Rtape[512]{};
-	unsigned long long Ltape[512]{};
+
+	std::valarray<bool> Tape = std::valarray<bool>(false, 1024*64);
 
 	unsigned Load(std::string program) {
 		unsigned count = 0;
@@ -92,37 +92,16 @@ private:
 	void Left() { head--; }
 	void Right() { head++; }
 	void Write(bool a) {
-		if (head >= 0) {
-			unsigned tape = head / 64;
-			if (a == true) Rtape[tape] = Rtape[tape] | (1ULL << (head % 64));
-			else Rtape[tape] = Rtape[tape] & ~(1ULL << (head % 64));
-		}
-		else if (head < 0) {
-			unsigned tape = abs((head + 1) / 64);
-			if (a == true) Ltape[tape] = Ltape[tape] | (1ULL << ((abs((head + 1) % 64))));
-			else Ltape[tape] = Ltape[tape] & ~(1ULL << (abs((head + 1) % 64)));
-		}
+		if (a == true) Tape[head+(512*64)+1] = (Tape[head + (512 * 64)+1] || true);
+		else Tape[head + (512 * 64)+1] = (Tape[head + (512 * 64)+1] && false);
 	}
 	bool Read() {
-		if (head >= 0) {
-			unsigned tape = head / 64;
-			unsigned long long val = Rtape[tape] & (1ULL << (head % 64));
-			if (val == 0) return false;
-			else return true;
-		}
-		else if (head < 0) {
-			unsigned tape = abs((head + 1) / 64);
-			unsigned long long val = Ltape[tape] & (1ULL << (abs((head + 1) % 64)));
-			if (val == 0) return false;
-			else return true;
-		}
+		return Tape[head + (512 * 64)+1] ;
 	}
 	void Start() {
 		head = state = count = 0;
-		for (unsigned u = 0; u < 512; u++) {
-			Ltape[u] = 0;
-			Rtape[u] = 0;
-		}
+		Tape = false;
+
 
 		states.clear();
 		instnum.clear();
@@ -131,15 +110,22 @@ private:
 	}
 	void End() {
 		std::string mess = "";
+		std::string lt = "", rt = "";
+		short block = head / 64;
+		for (unsigned i = 0; i < 64; i++) {
+			if (Tape[(512 + block - 1) * 64 + i + 1] == false) lt += "0";
+			else lt += "1";
+			if (Tape[(512 + block + 1) * 64 - i] == false) rt += "0";
+			else rt += "1";
+		}
+
 		if (head >= 0) {
 			for (int i = 0; i < 63 - (head % 64); i++) {
 				mess += " ";
 			}
 			mess += "_";
-
 		}
-
-		if (head < 0) {
+		else if (head < 0) {
 			for (int i = -1; i > -64 - ((head + 1) % 64); i--) {
 				mess += " ";
 			}
@@ -148,9 +134,9 @@ private:
 
 
 		std::cout << "State of the machine: \n"
-			<< std::bitset<64>(Ltape[(abs((head + 1) / 64))]) << std::endl
+			<< lt << std::endl
 			<< mess << std::endl
-			<< std::bitset<64>(Rtape[(head / 64)]) << std::endl;
+			<< rt << std::endl;
 		std::cout << "Head: " << head << std::endl;
 		std::cout << "State: " << state << std::endl;
 		std::cout << "Count: " << count << std::endl;
