@@ -18,28 +18,26 @@ public:
 	}
 	~TuringMachine() {}
 
-	template <typename T>
-	TuringMachine(T program) {
-		LoadAndRun(program);
-	}
-
 	TuringMachine(std::valarray<bool>& tape) {
 		Tape = tape;
 		VASize = tape.size();
 		zero = VASize / 2;
 	}
-	TuringMachine(unsigned long long n) {
-		VASize = std::pow(2, n);
-		zero = VASize / 2;
-		Tape = std::valarray<bool>(false, VASize);
+
+	TuringMachine(const unsigned long long& n) {
+		NewTape(n);
 	}
+
+	template <typename T>
+	TuringMachine(T program) {
+		LoadAndRun(program);
+	}
+
 	template <typename T>
 	TuringMachine(std::valarray<bool>& tape, T program) {
 		TuringMachine(tape);
 		LoadAndRun(program);
 	}
-
-
 
 	template <typename T>
 	void LoadAndRun(T program) {
@@ -53,6 +51,7 @@ public:
 		Start();
 		End();
 	}
+
 protected:
 	std::vector<std::string> states{};
 	long long head = 0;
@@ -140,12 +139,23 @@ protected:
 	bool Read() {
 		return Tape[head + (zero)+1] ;
 	}
+	void NewTape(unsigned long long n) {
+		VASize = unsigned long long(std::pow(2, n));
+		zero = VASize / 2;
+		Tape = std::valarray<bool>(false, VASize);
+	}
 	void Start(unsigned long long n) {
-		TuringMachine(n);
-		Start();
+		head = state = count = 0;
+
+		NewTape(n);
+
+		states.clear();
+		instnum.clear();
+		previous.clear();
 	}
 	void Start() {
 		head = state = count = 0;
+
 		Tape = false;
 
 		states.clear();
@@ -156,7 +166,7 @@ protected:
 	void End() {
 		std::string mess = "";
 		std::string lt = "", rt = "";
-		short block = head / 64;
+		long long block = head / 64;
 		for (unsigned i = 0; i < 64; i++) {
 			if (Tape[(zero/64 + block - 1) * 64 + i + 1] == false) lt += "0";
 			else lt += "1";
