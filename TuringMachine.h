@@ -17,15 +17,29 @@ public:
 	TuringMachine() {
 	}
 	~TuringMachine() {}
-	TuringMachine(std::vector<std::string> program) {
+
+	template <typename T>
+	TuringMachine(T program) {
 		LoadAndRun(program);
 	}
-	TuringMachine(std::string program) {
+
+	TuringMachine(std::valarray<bool>& tape) {
+		Tape = tape;
+		VASize = tape.size();
+		zero = VASize / 2;
+	}
+	TuringMachine(unsigned long long n) {
+		VASize = std::pow(2, n);
+		zero = VASize / 2;
+		Tape = std::valarray<bool>(false, VASize);
+	}
+	template <typename T>
+	TuringMachine(std::valarray<bool>& tape, T program) {
+		TuringMachine(tape);
 		LoadAndRun(program);
 	}
-	TuringMachine(std::valarray<bool>& tp) {
-		Tape = tp;
-	}
+
+
 
 	template <typename T>
 	void LoadAndRun(T program) {
@@ -41,13 +55,16 @@ public:
 	}
 protected:
 	std::vector<std::string> states{};
-	short head = 0;
+	long long head = 0;
+	const unsigned long long infimum = 0;
+	size_t VASize = 1024*64;
+	unsigned long long zero = VASize / 2;
 	unsigned state = 0;
 	unsigned count = 0;
 	std::vector<unsigned> instnum{};
 	std::vector<unsigned> previous{};
-
-	std::valarray<bool> Tape = std::valarray<bool>(false, 1024*64);
+	
+	std::valarray<bool> Tape = std::valarray<bool>(false, VASize);
 
 	unsigned Load(std::string program) {
 		unsigned count = 0;
@@ -92,19 +109,44 @@ protected:
 		}
 		else std::cerr << "State not in memory";
 	}
-	void Left() { head--; }
-	void Right() { head++; }
+	void Left() { 
+		if (--head < -(long long(zero))) {
+			zero = VASize;
+			VASize = 2 * VASize;
+			
+			std::valarray<bool> VTape = std::valarray<bool>(false, VASize); 
+			for (unsigned i = 0; i < zero; i++) {
+				VTape[i + zero] = Tape[i];
+			}
+			Tape = VTape;
+		}
+	}
+	void Right() { 
+		if (++head >= long long(zero)) {
+			zero = VASize;
+			VASize = 2 * VASize;
+
+			std::valarray<bool> VTape = std::valarray<bool>(false, VASize);
+			for (unsigned i = 0; i < zero; i++) {
+				VTape[i + zero] = Tape[i];
+			}
+			Tape = VTape;
+		}
+	}
 	void Write(bool a) {
-		if (a == true) Tape[head+(512*64)+1] = (Tape[head + (512 * 64)+1] || true);
-		else Tape[head + (512 * 64)+1] = (Tape[head + (512 * 64)+1] && false);
+		if (a == true) Tape[head+(zero)+1] = (Tape[head + (zero)+1] || true);
+		else Tape[head + (zero)+1] = (Tape[head + (zero)+1] && false);
 	}
 	bool Read() {
-		return Tape[head + (512 * 64)+1] ;
+		return Tape[head + (zero)+1] ;
+	}
+	void Start(unsigned long long n) {
+		TuringMachine(n);
+		Start();
 	}
 	void Start() {
 		head = state = count = 0;
 		Tape = false;
-
 
 		states.clear();
 		instnum.clear();
@@ -116,9 +158,9 @@ protected:
 		std::string lt = "", rt = "";
 		short block = head / 64;
 		for (unsigned i = 0; i < 64; i++) {
-			if (Tape[(512 + block - 1) * 64 + i + 1] == false) lt += "0";
+			if (Tape[(zero/64 + block - 1) * 64 + i + 1] == false) lt += "0";
 			else lt += "1";
-			if (Tape[(512 + block + 1) * 64 - i] == false) rt += "0";
+			if (Tape[(zero/64 + block + 1) * 64 - i] == false) rt += "0";
 			else rt += "1";
 		}
 
