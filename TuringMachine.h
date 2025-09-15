@@ -1,4 +1,4 @@
-// Turing Machine.h
+// TuringMachine.h
 // Reed Axewielder
 // 2025 Copyright AXEWIELDER GOODS
 // GMDA
@@ -262,3 +262,4 @@ protected:
 		}
 	}
 };
+
