@@ -23,6 +23,9 @@ public:
 	TuringMachine(std::string program) {
 		LoadAndRun(program);
 	}
+	TuringMachine(std::valarray<bool>& tp) {
+		Tape = tp;
+	}
 
 	template <typename T>
 	void LoadAndRun(T program) {
@@ -162,104 +165,103 @@ protected:
 			count++;
 			switch (c)
 			{
-				case ST : // Start. Initialize to zero.
-					Start();
-					break;
-					case LT : // Move tape head to the left.
-						Left();
-						break;
+			case ST: // Start. Initialize to zero.
+				Start();
+				break;
+			case LT: // Move tape head to the left.
+				Left();
+				break;
 
-						case RT : // Move tape head to the right.
-							Right();
-							break;
+			case RT: // Move tape head to the right.
+				Right();
+				break;
 
-							case CL : // Conditional Call
-							{
+			case CL: // Conditional Call
+			{
 
-								++it;
-								count++;
-								if (it != Program.end() && *it == TE) {
-									++it;
-									count++;
-									if (Read() == true)
-										Call(int(*it));
-									else {
-										++it;
-										count++;
-										if (it != Program.end() && *it != NG)
-											Call(int(*it));
-									}
+				++it;
+				count++;
+				if (it != Program.end() && *it == TE) {
+					++it;
+					count++;
+					if (Read() == true)
+						Call(int(*it));
+					else {
+						++it;
+						count++;
+						if (it != Program.end() && *it != NG)
+							Call(int(*it));
+					}
 
-								}
-								else if (it != Program.end() && *it == FE) {
-									++it;
-									count++;
-									if (Read() == false)
-										Call(int(*it));
-									else {
-										++it;
-										count++;
-										if (it != Program.end() && *it != NG)
-											Call(int(*it));
-									}
-								}
-								if (it == Program.end()) {
-									break; break;
-								}
-								break;
-							}
-							case WE : // Write TE or FE at tape head.
-								if ((it + 1) == Program.end()) { break; break; }
-							if (*(it + 1) == TE) Write(true);
-							if (*(it + 1) == FE) Write(false);
-							++it;
-							count++;
-							break;
-							case NG : // Do nothing.
-								break;
-								case RD : // Read the value at the tape head.
-									Read();
-									break;
-									case LD : // Load a machine state program.
-									{
-										std::string prog(it + 1, Program.end());
+				}
+				else if (it != Program.end() && *it == FE) {
+					++it;
+					count++;
+					if (Read() == false)
+						Call(int(*it));
+					else {
+						++it;
+						count++;
+						if (it != Program.end() && *it != NG)
+							Call(int(*it));
+					}
+				}
+				if (it == Program.end()) {
+					break; break;
+				}
+				break;
+			}
+			case WE: // Write TE or FE at tape head.
+				if ((it + 1) == Program.end()) { break; break; }
+				if (*(it + 1) == TE) Write(true);
+				if (*(it + 1) == FE) Write(false);
+				++it;
+				count++;
+				break;
+			case NG: // Do nothing.
+				break;
+			case RD: // Read the value at the tape head.
+				Read();
+				break;
+			case LD: // Load a machine state program.
+			{
+				std::string prog(it + 1, Program.end());
 
-										if (!prog.empty() && prog != "") {
-											Load(prog);
-										}
-										break;
-									}
+				if (!prog.empty() && prog != "") {
+					Load(prog);
+				}
+				break;
+			}
 
-									case RN : // Run the following program until the end.
-									{
-										prgrm.clear();
-										prgrm = "";
-										++it;
-										count++;
-										while (it != Program.end() && (*it) != ED) {
-											prgrm += (*it);
-											++it;
-											count++;
-										}
-										if ((*it) == ED) {
-											prgrm += (*it);
-											++it;
-											count++;
-										}
+			case RN: // Run the following program until the end.
+			{
+				prgrm.clear();
+				prgrm = "";
+				++it;
+				count++;
+				while (it != Program.end() && (*it) != ED) {
+					prgrm += (*it);
+					++it;
+					count++;
+				}
+				if ((*it) == ED) {
+					prgrm += (*it);
+					++it;
+					count++;
+				}
 
-										new TuringMachine(prgrm);
-										if (it == Program.end()) { break; break; }
-										break;
-									}
-									case ED : // End the program and print the machine state.
-										End();
+				new TuringMachine(prgrm);
+				if (it == Program.end()) { break; break; }
+				break;
+			}
+			case ED: // End the program and print the machine state.
+				End();
 
-										break;
+				break;
 
-									default:
-										break;
+			default:
+				break;
 			}
 		}
 	}
 };
-
