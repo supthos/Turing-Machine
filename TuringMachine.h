@@ -235,7 +235,7 @@ protected:
 					number += *it;
 				}
 
-				if (number == "") {
+				if (number == "" && std::stoi(number)>=0) {
 					Start(std::stoi(number));
 				}
 				else {
