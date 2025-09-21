@@ -6,6 +6,7 @@
 #include <vector>
 #include <iostream>
 #include <valarray>
+#include <string>
 
 enum TMInst: char
 {
@@ -225,8 +226,23 @@ protected:
 			switch (c)
 			{
 			case ST: // Start. Initialize to zero.
-				Start();
+			{
+				std::string number = "";
+					
+				while (it + 1 != Program.end() && *(it+1) != NG) {
+					++it;
+					++count;
+					number += *it;
+				}
+
+				if (number == "") {
+					Start(std::stoi(number));
+				}
+				else {
+					Start();
+				}
 				break;
+			}
 			case LT: // Move tape head to the left.
 				Left();
 				break;
@@ -237,7 +253,6 @@ protected:
 
 			case CL: // Conditional Call
 			{
-
 				++it;
 				count++;
 				if (it != Program.end() && *it == TE) {
