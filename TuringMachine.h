@@ -95,13 +95,14 @@ protected:
 		}
 		return count;
 	}
-	void Call(unsigned state) {
+	bool Call(unsigned state) {
+		bool retval = false;
 		if (state < states.size()) {
 			previous.push_back(this->state);
 			instnum.push_back(count);
 			this->state = state;
 
-			Run(states[state]);
+			retval = Run(states[state]);
 
 			this->state = previous.back();
 			previous.pop_back();
@@ -109,6 +110,7 @@ protected:
 			instnum.pop_back();
 		}
 		else std::cerr << "State not in memory";
+		return retval;
 	}
 	void Left() {
 		if (--head < -(long long(zero))) {
@@ -242,12 +244,12 @@ protected:
 					++it;
 					count++;
 					if (Read() == true)
-						Call(int(*it));
+						retval = Call(int(*it));
 					else {
 						++it;
 						count++;
 						if (it != Program.end() && *it != NG)
-							Call(int(*it));
+							retval = Call(int(*it));
 					}
 
 				}
@@ -255,12 +257,12 @@ protected:
 					++it;
 					count++;
 					if (Read() == false)
-						Call(int(*it));
+						retval = Call(int(*it));
 					else {
 						++it;
 						count++;
 						if (it != Program.end() && *it != NG)
-							Call(int(*it));
+							retval = Call(int(*it));
 					}
 				}
 				if (it == Program.end()) {
