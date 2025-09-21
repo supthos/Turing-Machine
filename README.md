@@ -17,7 +17,8 @@
 
 <p>It has a bidirectional tape, with an initial size of 1024*64 squares, extensible with a proper way of addressing.
 It also has a std::vector<string> to hold the states of the program for the machine. XD
-</br>If START is followed by a positive number n, the machine will have, initially, a tape of 2^n squares.
+
+  <p>If START is followed by a positive number n and the symbol NOTHING ("NG") or the end of the string, the machine will have, initially, a tape of 2^n squares.
 
 <p>A WRITE instruction must be followed by either TRUE ("TE") or FALSE ("FE"), so it's a 2-byte instruction.
 </br>  { WE, TE } or { WE, FE }
