@@ -40,13 +40,15 @@ public:
 	}
 
 	template <typename T>
-	void LoadAndRun(T program) {
+	bool LoadAndRun(T program) {
 		unsigned ld = Load(program);
 		if (ld > 0 && states.size() > 0 && ld <= states.size()) {
 			unsigned se = unsigned(states.size()) - ld;
-			Run(states[se]);
+			return Run(states[se]);
 		}
+		else return false;
 	}
+
 	void Reset() {
 		Start();
 		End();
@@ -108,28 +110,14 @@ protected:
 		}
 		else std::cerr << "State not in memory";
 	}
-	void Left() { 
+	void Left() {
 		if (--head < -(long long(zero))) {
-			zero = VASize;
-			VASize = 2 * VASize;
-			
-			std::valarray<bool> VTape = std::valarray<bool>(false, VASize); 
-			for (unsigned i = 0; i < zero; i++) {
-				VTape[i + zero] = Tape[i];
-			}
-			Tape = VTape;
+			MoreTape();
 		}
 	}
-	void Right() { 
+	void Right() {
 		if (++head >= long long(zero)) {
-			zero = VASize;
-			VASize = 2 * VASize;
-
-			std::valarray<bool> VTape = std::valarray<bool>(false, VASize);
-			for (unsigned i = 0; i < zero; i++) {
-				VTape[i + zero] = Tape[i];
-			}
-			Tape = VTape;
+			MoreTape();
 		}
 	}
 	void Write(bool a) {
@@ -138,6 +126,22 @@ protected:
 	}
 	bool Read() {
 		return Tape[head + (zero)+1] ;
+	}
+	void MoreTape() {
+		zero = VASize;
+		VASize = 2 * VASize;
+
+		std::valarray<bool> VTape = std::valarray<bool>(false, VASize);
+		if (VTape.size() == VASize) {
+			for (unsigned i = 0; i < zero; i++) {
+				VTape[i + zero] = Tape[i];
+			}
+			Tape = VTape;
+		}
+		else {
+			std::cerr << "No more tape available. Sorry.\n"
+				<< "Womp, womp...\n";
+		}
 	}
 	void NewTape(unsigned long long n) {
 		VASize = unsigned long long(std::pow(2, n));
@@ -209,7 +213,8 @@ protected:
 			<< "States: " << states.size() << std::endl;
 	}
 
-	void Run(std::string Program) {
+	bool Run(std::string Program) {
+		bool retval = true;
 		count = 0;
 		std::string prgrm = "";
 		for (std::string::iterator it = (Program.begin() + count); it < Program.end(); ++it) {
@@ -302,7 +307,9 @@ protected:
 					count++;
 				}
 
-				new TuringMachine(prgrm);
+				TuringMachine* TM = new TuringMachine();
+				retval = TM->LoadAndRun(prgrm);
+				delete(TM);
 				if (it == Program.end()) { break; break; }
 				break;
 			}
@@ -312,8 +319,10 @@ protected:
 				break;
 
 			default:
+				retval = false;
 				break;
 			}
 		}
+		return retval;
 	}
 };
