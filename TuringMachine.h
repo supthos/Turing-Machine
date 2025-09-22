@@ -4,6 +4,7 @@
 // GMDA
 #pragma once
 #include <vector>
+#include <cmath>
 #include <iostream>
 #include <valarray>
 #include <string>
@@ -13,18 +14,28 @@ enum TMInst: char
 	FE, TE, ST, LT, RT, WE, RD, RN, LD, CL, ED, NG = -1
 };
 
+template<typename T>
+using TMTape = std::valarray<T>;
+
+template <typename T>
+TMTape<T> MakeTape(const unsigned long long& k) {
+	return std::valarray<T>(T(false), std::pow(2, double(k)));
+}
+
 class TuringMachine {
 public:
 	TuringMachine() {
+		NewTape(16);
 	}
 	~TuringMachine() {}
 
-	TuringMachine(std::valarray<bool>& tape) {
+	TuringMachine(TMTape<bool>& tape) {
 		Tape = tape;
-		VASize = tape.size();
-		zero = VASize / 2;
+		zero = Tape.size() / 2;
+		order = std::log2(zero) + 1;
 	}
 
+	// turing machine with tape of 2^n squares
 	TuringMachine(const unsigned long long& n) {
 		NewTape(n);
 	}
@@ -35,7 +46,7 @@ public:
 	}
 
 	template <typename T>
-	TuringMachine(std::valarray<bool>& tape, T program) {
+	TuringMachine(TMTape<bool>& tape, T program) {
 		TuringMachine(tape);
 		LoadAndRun(program);
 	}
@@ -59,15 +70,39 @@ protected:
 	std::vector<std::string> states{};
 	long long head = 0;
 	const unsigned long long infimum = 0;
-	size_t VASize = 1024*64;
-	unsigned long long zero = VASize / 2;
+	unsigned long long order = 16;
+	unsigned long long zero = 1024*64 / 2;
+	TMTape<bool> Tape = MakeTape<bool>(order);
 	unsigned state = 0;
 	unsigned count = 0;
 	std::vector<unsigned> instnum{};
 	std::vector<unsigned> previous{};
 	
-	std::valarray<bool> Tape = std::valarray<bool>(false, VASize);
+	void NewTape() {
+		Tape = MakeTape<bool>(order);
+	}
+	//new tape with 2^n squares
+	void NewTape(unsigned long long n) {
+		Tape = MakeTape<bool>(n);
+		zero = Tape.size() / 2;
+		order = n;
+	}
+	void MoreTape() {
+		TMTape<bool> VTape = MakeTape<bool>(order+1);
 
+		if (VTape.size() == 2*Tape.size()) {
+			for (unsigned i = 0; i < Tape.size(); i++) {
+				VTape[i + zero] = Tape[i];
+			}
+			Tape = VTape;
+			zero = Tape.size() / 2;
+			++order;
+		}
+		else {
+			std::cerr << "No more tape available. Sorry.\n"
+				<< "Womp, womp...\n";
+		}
+	}
 	unsigned Load(std::string program) {
 		unsigned count = 0;
 		std::string prog = "";
@@ -130,27 +165,8 @@ protected:
 	bool Read() {
 		return Tape[head + (zero)+1] ;
 	}
-	void MoreTape() {
-		zero = VASize;
-		VASize = 2 * VASize;
-
-		std::valarray<bool> VTape = std::valarray<bool>(false, VASize);
-		if (VTape.size() == VASize) {
-			for (unsigned i = 0; i < zero; i++) {
-				VTape[i + zero] = Tape[i];
-			}
-			Tape = VTape;
-		}
-		else {
-			std::cerr << "No more tape available. Sorry.\n"
-				<< "Womp, womp...\n";
-		}
-	}
-	void NewTape(unsigned long long n) {
-		VASize = unsigned long long(std::pow(2, n));
-		zero = VASize / 2;
-		Tape = std::valarray<bool>(false, VASize);
-	}
+	
+	
 	void Start(unsigned long long n) {
 		head = state = count = 0;
 
