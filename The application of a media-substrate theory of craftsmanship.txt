@@ -1,0 +1,377 @@
+The application of a media-substrate theory of craftsmanship
+or of the representation of objects and their values 
+as a model for abstract data types and structures in general.
+
+The domain of discourse of our media-substrate theory is 
+the class of all abstract and concrete objects. 
+The interpretation of the media-substrate theory is a class of
+of abstract objects that represent any kind of object.
+
+Hypothesis
+If Type theory serves and functions as a valid foundation for mathematics,
+then our media-substrate theory of craftsmanship is valid as well for the same purposes.
+That is, our media-substrate theory of craftsmanship is a substrate of mathematical
+value.
+
+Motivation
+As an artist, a notion of craftsmanship is immediately evident
+when confronted with a blank canvas. But it is only an aspect
+of the pratice of art. As a mathematician, I am interested in
+assessing the powers of expression, and can't help but seeing 
+the blank canvas as a symbol for the empty set. As a computer 
+scientist, I want to formally specify any kind of media or 
+substrates as a generic kind of abstract data type that can 
+be fed into a computer for analysis and manipulation, and for 
+the creation of new types. It would be very neat to have a 
+conceptual framework that is fundamentally true against which
+to formally model any object given some kind of expression
+that discriminates between objects of its kind or sufficient 
+information to implement it. That is, I may want to model
+oil paint being placed on a canvas and oxidizing or whatever. 
+Or a biologist might want to construct a formal model of 
+some weird, complex biological process, it would be good to know 
+there's an algorithm for it. The Catholic in me sees nothing
+but the Hands of God, reaching to the poor, full of boons and
+gifts and Goods for the betterment of humanity as a symbol
+of Peace for all nations and as sign of the direction of
+Intelligent Evolution. In contrast to the recent over-hyped
+developments on artificial intelligence (S0rry!)...
+As a type designer, I hear the words type, sorts, canvas,
+and can't help but feel like there's some kind of recursive
+metaphor that I should know about. As a media producer, I just
+want to produce good content of good values and turn a profit.
+
+Status: UNFINISHED!
+
+An idea of craftsmanship 
+Craftsmanship is the disciplined application of a body of knowledge 
+to produce an object of value. For no one can escape their own existence,
+let alone, the rule of order!
+
+The Abstraction part of the Problem
+In general, how to represent the values of any object A with values 
+of some abstract object B.
+
+1. An object of value
+
+Definition of an object
+Objects may be concrete, abstract or both.
+Abstract objects are objects of the mind. 
+
+A mathematical object is an abstract concept that can be a value assigned
+to a symbol and be involved in formulas.
+
+Definition of concept
+A concept is the interpretation of a symbol.
+
+Definition of Symbol
+A logical symbol refers to an idea, and a token (a mark or configuration 
+of marks that form a particular pattern) is taken as an instance of the symbol.
+
+Symbols can be logical or non-logical.
+Logical symbols have the same meaning regardless of the object studied.
+A non-logical symbol changes in meaning depending on the domain of a theory.
+
+Definition of interpretation
+An interpretation is the assignment of meaning to the symbols (letters)
+of a formal language.
+
+The simplest abstract object is NOTHING.
+An abstract object is a set with structure.
+
+To conceive of nothing, we must first exist and be conscious of our existence.
+Then, we must formulate a language that interprets the concept of existence and,
+within that language express the negation of existence.
+Or we could very simply take it as given.
+
+an action or a process that produces 
+the type of some value
+
+Definition of Formal Language
+A formal language over a non-empty alphabet is a subset of the set 
+of all possible words of finite length of that alphabet.
+
+The syntax of a formal language can be defined independently of interpretation. 
+
+Definition of alphabet
+An alphabet is a finite or infinite set whose elements are called letters.
+Or a set of symbols.
+
+Definition of a word or formula
+A word is a finite sequence of letters, whose length is the number 
+of letters it is composed of. For any alphabet, there is only
+one word of size zero, the Empty Word.
+
+Definition of well-formed word or formula
+A symbol or a sequence of symbols may comprise a well-formed formula
+of a language if it is consistent with the formation rules of that language.
+A word in the set of all possible words of the alphabet of a formal language 
+is a well-formed if it is a member of that language.
+
+Definition of structure
+A structure consists of a set equipped with operations and relations.
+A structure is a triple A = (A, sigma, I)
+A is a domain of discourse, the universe, a theory...
+sigma is a signature, 
+I is an interpretation function that indicates how the signature is to
+be interpreted in the domain. (Interpretation depends on signature.)
+by assigning functions and relations to the symbols of its signature.
+
+Definition of signature 
+A signature lists and describes the non-logical symbols of a formal language, 
+or the operations that characterize an algebraic structure, or both.
+The signature of a structure is an arbitrary set
+sigma = (S, ar), where
+S is a set of function symbols and relation symbols and
+ar is the arity function or rank function that assigns the number 
+of arguments or operands taken by a function, operation or relation 
+to their respective symbols.
+
+A single-sorted signature sigma = (F, R, C, ar)
+function symbols F
+relation symbols R
+constant symbols C
+ar : F union R -> N
+
+The cardinality of a signature is |sigma| = |F| + |R| + |C|
+The language of a signature is the set of all well-formed sentences
+built from the symbols in that signature together with the symbols 
+in the logical system.
+
+A many-sorted signature is the triple (S, P, Type)
+S is a set of sorts
+P is a set of symbols
+Type is a map from p in P to a symbol type over S
+
+Definition of relational signature
+A signature with no function symbols is a relational signature
+
+Definition of algebraic signature
+A signature with no relation symbols is an algebraic signature.
+
+Definition of an algebra
+A structure with an algebraic signature is called an algebra.
+
+Definition of a relation
+A relation denotes some kind of relationship between two objects in a set.
+A relation R over a set X can be seen as a set of ordered pairs (x, y) 
+of members of X.
+If a relation R holds between x and y in X, we may write xRy.
+
+Definition of a function
+A function is a binary relation between two sets of objects
+that may be injective, surjective or bijective.
+
+Definition of injective or one-to-one
+A function F:A->B is injective, if for every element a in A, 
+there is, at most, only one b in B such that (a,b) is in F.
+
+Definition of surjective or onto
+A function G:A->B is surjective if for every element b in B
+there is, at least, one a in A such that (a,b) is in G.
+
+Definition of a bijective or invertible function
+A function is bijective if and only if it is both injective 
+and surjective.
+
+Definition of an empty function
+For every set A there is an empty function from the empty set
+to A, and its graph is the empty set.
+
+Definition of an operation
+An operation is a function from tuples of elements of a set to 
+an element of that very same set.
+
+Definition of the identity funtion
+The identity function on a set A is an operation that identifies
+an element a in A with itself.
+
+Definition of a tuple
+A tuple is a sequence, or an ordered list of objects.
+
+(An n-tuple can be thought of as the image of a function from 
+the set of the n first natural numbers to a domain of discourse.
+but we haven't defined the naturals yet. In fact we haven't defined 
+a set either, let alone the empty set.)
+
+Definition of composition
+Composition is an operation on the space of all functions (Oof. What's that?)
+where, if the image of a function F is equivalent to the domain
+of a function G, then there must be a function called G composed 
+with F, whose domain is the domain of F and whose image is the image
+of G.
+
+Definition of a class
+A class is a collection of sets or other mathematical objects that can
+be unambiguously defined by a property that all its members share.
+
+Definition of a proper class
+A proper class are entities that are not members of any other.
+
+Definition of a category
+A category is formed by two sorts of objects:
+The objects of the category and
+The morphisms that relate a source object and a target object
+
+A category C consists of the following 3 mathematical entities:
+a class of objects 
+a class of morphisms
+a binary operator of composition of morphisms
+
+Each category is distinguished by properties that all its objects
+have in common.
+One may characterize the objects of a category in terms of their
+relations to other objects.
+
+Definition of type theory
+A type theory is a collection of rules of inference that result in judgments.
+A type theory has judgments that define types and assigns
+to them a collection of formal objects, known as terms.
+
+Examples of judgments in type theories
+Most type theories have 4 judgments:
+1. T is a type
+2. t is a term of type T
+3. Type T_1 is equal to type T_2
+4. Terms t_1 and t_2 of type T are equal
+
+Definition of judgment
+judgment is the evaluation of given state of affairs
+to make a decision.
+
+Definition of decision
+Decision is an abstract process resulting in the selection
+of an object from a set of options. Every decision-making
+process produces a final choice.
+
+3. Type systems and type theory
+Definition of a type
+A type is an object that describes how an element or a finite collection 
+of elements in a mathematical structure might behave.
+A type is a set of first-order formulas in a language L with free variables
+x_1, x_2,..., x_n that are true of a set of n-tuples of an L-structure M.
+
+Definition of a type constructor
+A type constructor is an n-ary type operator that takes as argument
+zero or more types, returning another type.
+
+Definition of a term
+A term is recursively defined in first-order logic as
+of a constant symbol, a variable, or a function application
+
+Definition of a sort
+A sort is a class of types. 
+
+Definition of a kind
+A kind is the type of a higher-order type operator (type constructor).
+
+Definition of a formal system
+A formal system is an abstract structure and the formalization of an axiomatic
+system.
+A formal system is a formal language equipped with a deductive 
+or a finite or transfinite inductive system.
+
+Definition of a logical system
+A logical system is a deductive system equipped with non-logical axioms.
+
+Definition of a deductive system
+A deductive system is the set of axioms and inference or transformation rules used
+to derive theorems of the system from others.
+
+Definition of an axiom
+Any axiom is a statement from which other statements are logically derived.
+Logical axioms are certain formulas in a formal language that are
+universally true in its domain of discourse.
+
+Definition of logical axiom
+A logical axiom is taken to be true within the system of logic they define. 
+
+Definition of non-logical axiom
+A non-logical axiom is an assertion about the elements of the domain
+of a specific mathematical theory.
+
+2. The value of an object
+
+Definitions of value
+Value is the interpretation of an object within some domain 
+of discourse or within some state of affairs.
+
+A value can also be a symbol that represents some concept 
+or meaningful structure that encodes the value of a particular
+object, or it can be an element of some measurable space.
+
+The value of an object of some type may be produced by some interpretation function.
+
+Values can be intrinsic or instrumental
+
+
+
+
+A notion of measurement
+A measurement is a judgment between values.
+
+A notion of judgment
+A judgment is any procedure that determines the best representation
+of an object from a set of values.
+
+Definition of a known type
+A known type is that for which we are capable of discerning (judgment) 
+the value of the object referred to by that type under the scrutiny
+of some measuring apparatus. Such measuring apparatus is indispensable
+for the functioning of a Turing Machine. (the read instruction).
+
+Abstract data types, from the perspective of a Turing machine,
+are nothing more than an abstract construct expressed in the 
+configuration of information contained in the tape that interpret the value of
+a type.
+
+Definition of data
+Data are a collection of discrete or continuous values
+that convey information.
+
+Definition of a datum
+A datum is an individual value in a collection of data.
+
+Definition of a state of affairs
+If a relation holds between entities(objects) then the relation together
+with the entities constitutes a fact or a state of affairs.
+
+Definition of a fact
+A fact is a true datum about one or more aspects of a state of affairs.
+facts may be understood as information that makes a true sentence
+true.
+
+Definition of data structure
+Data structures are concrete representations of data.
+
+An abstract data type is analogous to an algebraic structure
+
+Definition of an Algebraic specification of data types
+The syntax of an algebraic specification is formulated in 2 steps
+1. Defining a formal signature of data types and operation symbols
+2. Interpreting the signature through sets and functions.
+
+the signature of an algebraic specification consists
+of a set S of data types, known as sorts with
+a family SIGMA of sets, each of which contains operation
+symbols (or simply symbols) that relate the sorts.
+Definition of container
+A container is an object capable of holding other objects.
+
+A concrete container is one capable of holding concrete 
+and abstract objects.
+An abstract container is one capable of holding
+only abstract objects.
+
+Definition of substrate and media
+A substrate is any container of media objects.
+
+A medium is an object of value.
+An object of value is one whose relations you may determine
+from between things of its like.
+
+A substrate is a structure of objects that inform units of some media.
+
+A medium is a structure of objects that inform units of value.
+
+A set is a medium of abstract objects.
