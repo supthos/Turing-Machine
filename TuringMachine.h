@@ -159,8 +159,7 @@ protected:
 		}
 	}
 	void Write(bool a) {
-		if (a == true) Tape[head+(zero)+1] = (Tape[head + (zero)+1] || true);
-		else Tape[head + (zero)+1] = (Tape[head + (zero)+1] && false);
+		Tape[head + (zero)+1] = a;
 	}
 	bool Read() {
 		return Tape[head + (zero)+1] ;
