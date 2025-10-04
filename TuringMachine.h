@@ -310,7 +310,7 @@ protected:
 			case NG: // Do nothing.
 				break;
 			case RD: // Read the value at the tape head.
-				Read();
+				retval = Read();
 				break;
 			case LD: // Load a machine state program.
 			{
