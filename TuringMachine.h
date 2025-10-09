@@ -159,10 +159,10 @@ protected:
 		}
 	}
 	void Write(bool a) {
-		Tape[head + (zero)+1] = a;
+		Tape[head + (zero)] = a;
 	}
 	bool Read() {
-		return Tape[head + (zero)+1] ;
+		return Tape[head + (zero)] ;
 	}
 	
 	
@@ -190,9 +190,9 @@ protected:
 		std::string lt = "", rt = "";
 		long long block = head / 64;
 		for (unsigned i = 0; i < 64; i++) {
-			if (Tape[(zero/64 + block - 1) * 64 + i + 1] == false) lt += "0";
+			if (Tape[(zero/64 + block - 1) * 64 + i] == false) lt += "0";
 			else lt += "1";
-			if (Tape[(zero/64 + block + 1) * 64 - i] == false) rt += "0";
+			if (Tape[(zero/64 + block + 1) * 64 - i - 1] == false) rt += "0";
 			else rt += "1";
 		}
 
